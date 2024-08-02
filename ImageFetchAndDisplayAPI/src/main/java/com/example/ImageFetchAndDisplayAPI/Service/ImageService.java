@@ -19,8 +19,8 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
-    public Image saveImage(MultipartFile file) throws IOException {
-        logger.info("Saving image: {}", file.getOriginalFilename());
+    public Image saveImage(MultipartFile file, String name, String type) throws IOException {
+        logger.info("Saving image: {}", name);
         logger.info("File size: {} bytes", file.getSize());
 
         if (file.getSize() > 50 * 1024 * 1024) { // Example limit of 50 MB
@@ -29,8 +29,8 @@ public class ImageService {
         }
 
         Image image = new Image();
-        image.setName(file.getOriginalFilename());
-        image.setType(file.getContentType());
+        image.setName(name);
+        image.setType(type);
 
         byte[] imageBytes = file.getBytes();
         logger.info("Byte array length: {}", imageBytes.length);
@@ -42,7 +42,7 @@ public class ImageService {
             logger.info("Image saved successfully with ID: {}", savedImage.getId());
             return savedImage;
         } catch (Exception e) {
-            logger.error("Failed to save image: {}", file.getOriginalFilename(), e);
+            logger.error("Failed to save image: {}", name, e);
             throw new IOException("Failed to save image: " + e.getMessage(), e);
         }
     }

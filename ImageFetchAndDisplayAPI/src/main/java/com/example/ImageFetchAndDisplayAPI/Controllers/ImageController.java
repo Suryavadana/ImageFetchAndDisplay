@@ -25,14 +25,18 @@ public class ImageController {
     private ImageService imageService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            logger.warn("File is empty");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+    public ResponseEntity<String> uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("type") String type) {
+
+        if (file.isEmpty() || name.isEmpty() || type.isEmpty()) {
+            logger.warn("File, name, or type is empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File, name, or type is empty");
         }
 
         try {
-            imageService.saveImage(file);
+            imageService.saveImage(file, name, type);
             logger.info("Image uploaded successfully");
             return ResponseEntity.ok("Image uploaded successfully");
         } catch (IOException e) {
